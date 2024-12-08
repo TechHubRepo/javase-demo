@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.demo'
+version = '1.0.0'
+
+/* Directory for the Java Module (.jmod) file */
+def jmodDir = layout.buildDirectory.dir("jmods").get().asFile;
+
+/* Defines the JMOD file name */
+def jmodFileName = "$jmodDir/${project.name}.jmod";
+
+/* Defined the JMOD version */
+def jmodVersion = '1.0';
+
+/* Compiled classes output directory */
+def classesDir = layout.buildDirectory.dir("classes/java/main").get().asFile;
+
+java {
+    /* Ensure Gradle uses the module path */
+    modularity.inferModulePath = true
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation files(
+            "${projectDir}/libs/JmodUtil-1.0.0.jar"
+    )
+}
+
+test {
+    useJUnitPlatform()
+}
+
+/* Register a task to create JMOD file */
+tasks.register('buildJmod', Exec) {
+
+    /* Ensures that classes are compiled before creating the JMOD file */
+    dependsOn('classes');
+    group = 'build';
+    description = 'Creates a JMOD file for the project module';
+
+    inputs.dir classesDir
+    outputs.dir jmodDir
+
+    /* Creates JMOD destination directory */
+    doFirst {
+        jmodDir.mkdirs()
+    }
+
+    /* Running JMOD Command to create jmod file */
+    commandLine = ['jmod', 'create', '--class-path', classesDir, '--module-version', jmodVersion, jmodFileName] as List<String>
+}

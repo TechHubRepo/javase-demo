@@ -8,4 +8,5 @@ module JmodUtil {
     requires java.base;
     exports com.greetings;
     exports com.util;
+    exports com.testp to JmodC;
 }

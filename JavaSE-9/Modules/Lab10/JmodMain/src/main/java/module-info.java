@@ -1,0 +1,4 @@
+module JmodMain {
+
+    requires JmodUtil;
+}
