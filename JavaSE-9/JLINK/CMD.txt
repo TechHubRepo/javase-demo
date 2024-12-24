@@ -1,0 +1,4 @@
+$ javac --module-source-path src -d out -m module.a
+$ java --module-path out -m module.a/p1.Hello
+$ jlink --module-path out --add-modules module.a,java.base --launcher myapp=module.a/p1.Hello --compress 2 --output MyJRE
+$ ./myapp
